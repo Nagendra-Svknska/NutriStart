@@ -11,7 +11,7 @@ class AuthService {
       debugPrint("******** Inside AuthService ********");
       debugPrint("BASE URL = ${DioClient.dio.options.baseUrl}");
       final response = await DioClient.dio.get('/');
-      print("Inside AuthService: ${response.data['message']}");
+      print("Inside AuthService latest: ${response.data['message']}");
 
       return response.data['message'];
 
