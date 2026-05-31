@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../cart/models/cart_item.dart';
+import '../screens/order_history_screen.dart';
 
 class FinalScreen extends StatelessWidget {
 
@@ -166,6 +166,36 @@ class FinalScreen extends StatelessWidget {
                 ),
               ],
             ),
+        const SizedBox(
+            height: 30,
+          ),
+
+          SizedBox(
+
+            width: double.infinity,
+            height: 55,
+
+            child: ElevatedButton(
+
+              onPressed: () {
+
+                Navigator.pushReplacement(
+
+                  context,
+
+                  MaterialPageRoute(
+
+                    builder: (_) =>
+                        const OrderHistoryScreen(),
+                  ),
+                );
+              },
+
+              child: const Text(
+                "View Orders",
+              ),
+            ),
+          ),
           ],
         ),
       ),

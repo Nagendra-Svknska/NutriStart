@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-
+import 'package:flutter/material.dart';
 import '../../../core/network/dio_client.dart';
 
 class AuthService {
@@ -8,6 +8,8 @@ class AuthService {
 
     try {
       print("Inside AuthService");
+      debugPrint("******** Inside AuthService ********");
+      debugPrint("BASE URL = ${DioClient.dio.options.baseUrl}");
       final response = await DioClient.dio.get('/');
       print("Inside AuthService: ${response.data['message']}");
 

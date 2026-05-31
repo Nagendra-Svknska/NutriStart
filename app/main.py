@@ -3,6 +3,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from app.db import supabase
+from app.env import Settings
+from typing import List
+from jose import jwt
+from datetime import datetime, timedelta
+from fastapi import Header, HTTPException
+
+settings = Settings()
 
 app = FastAPI(
     title="Food Delivery Project API",
@@ -17,16 +24,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-class Order(BaseModel):
-    id: int
-    restaurant: str
-    items: list[str]
-    total: float
-    status: str = "pending"
 
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class OrderItem(BaseModel):
+    name: str
+    quantity: int
+    price: float
+
+class OrderRequest(BaseModel):
+    items: List[OrderItem]
+    total: float
+
 
 @app.get("/")
 def read_root():
@@ -36,41 +47,17 @@ def read_root():
 def health_check():
     return {"status": "ok"}
 
-@app.get("/orders/{order_id}")
-def read_order(order_id: int):
-    return {
-        "id": order_id,
-        "restaurant": "Example Pizza",
-        "items": ["Margherita", "Soft drink"],
-        "total": 23.50,
-        "status": "preparing",
-    }
-
-@app.post("/orders")
-def create_order(order: Order):
-    return {
-        "message": "Order created successfully",
-        "order": order,
-    }
-
 @app.post("/login")
 def login(data: LoginRequest):
 
-    print("MAIN FILE LOADED")
+    print("NEW MAIN FILE LOADED")
+    token = create_access_token({"sub": data.email})
+    print(f"token : {token}")
 
-    if (
-        data.email == "admin@test.com"
-        and data.password == "123456"
-    ):
+    if (data.email == "admin@test.com" and data.password == "123456"):
+        return {"access_token": token,"token_type": "bearer"}
 
-        return {
-            "access_token": "dummy_jwt_token",
-            "token_type": "bearer"
-        }
-
-    return {
-        "error": "Invalid credentials"
-    }
+    return {"error": "Invalid credentials"}
 
 @app.get("/menu")
 def get_menu():
@@ -80,6 +67,45 @@ def get_menu():
     print(type(response.data))
     return response.data
 
+@app.post("/orders")
+def create_order(order: OrderRequest,authorization: str = Header(None)):
+    user_email = get_current_user(authorization)
+    response = supabase.table("Orders").insert({
+        "items": 
+        [
+            item.dict()
+            for item in order.items
+        ],
+        "total": order.total,
+        "status": "placed",
+        "user_email": user_email,}).execute()
+
+    return {"message": "Order placed successfully","data":response.data}    
+
+@app.get("/orders")
+def get_orders(authorization: str = Header(None)):
+    user_email = get_current_user(authorization)
+    response = supabase.table("Orders").select("*").eq("user_email",user_email).execute()
+    return response.data
+
+
+def create_access_token(data: dict):
+
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode,settings.SECRET_KEY,algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+def get_current_user(authorization: str = Header(None)):
+
+    if not authorization:
+        raise HTTPException(status_code=401,detail="Missing token")
+    token =authorization.split(" ")[1]
+    payload = jwt.decode(token,settings.SECRET_KEY,algorithms=[settings.ALGORITHM])
+    return payload["sub"]
+
+
 
 # if __name__ == "__main__":
 #     print("Starting the Food Delivery API...")
@@ -88,3 +114,20 @@ def get_menu():
 
 
 # uvicorn app.main:app --reload
+
+
+
+
+# @app.post("/orders")
+# def create_order(order: OrderRequest):
+
+#     response = supabase.table("Orders").insert({
+#         "items": 
+#         [
+#             item.dict()
+#             for item in order.items
+#         ],
+#         "total": order.total,
+#         "status": "placed",}).execute()
+
+#     return {"message":"Order placed successfully","data":response.data}

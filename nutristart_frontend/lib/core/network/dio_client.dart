@@ -1,30 +1,49 @@
 import 'package:dio/dio.dart';
+// import '../../features/auth/services/';
+import '../storage/token_storage.dart';
 
 class DioClient {
 
-  static final Dio dio = Dio(
+static final Dio dio = Dio(
+  BaseOptions(
 
-    BaseOptions(
-      
-      // web browser uses
-      // baseUrl: 'http://127.0.0.1:8000',
+    // web browser uses
+    // baseUrl: 'http://127.0.0.1:8000',
 
-      // android emulator uses
-      // baseUrl: 'http://10.0.2.2:8000',
+    // android emulator uses
+    baseUrl: 'http://10.0.2.2:8000',
 
-      baseUrl: 'http://127.0.0.1:8000',
+    // baseUrl: 'http://127.0.0.1:8000',
+    
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 5),
+    headers: {'Content-Type': 'application/json',},),)
+  
+  ..interceptors.add(
 
-      
+    InterceptorsWrapper(
 
-      connectTimeout: const Duration(seconds: 5),
+      onRequest:
 
-      receiveTimeout: const Duration(seconds: 5),
+          (options, handler) async {
 
-      headers: {
-        'Content-Type': 'application/json',
+        final token =await TokenStorage.getToken();
+        // final token = null;
+
+        if (token != null) {
+          print("TOKEN SENT latest: $token");
+
+          options.headers[
+              'Authorization'] =
+
+              'Bearer $token';
+        }
+
+        return handler.next(
+          options,
+        );
       },
     ),
-    
   );
   void logBaseUrl() {
     print("BASE URL: http://10.0.2.2:8000");

@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
-    );
+
+      // home: Scaffold(body: Center(child: Text("Test"),),),
+      );
   }
 }
 
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    print("HOME PAGE INIT");
 
     fetchMessage();
   }
@@ -47,10 +50,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchMessage() async {
 
     final result = await authService.getWelcomeMessage();
+    print("RESULT = $result");
+    setState(() {message = result;});
+    
+    // setState(() {message = "Skipping API";});
 
-    setState(() {
-      message = result;
-    });
   }
 
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/cart_provider.dart';
 
 import '../../order/screens/final_screen.dart';
+import '../../order/services/order_service.dart';
 
 class CartScreen extends ConsumerWidget {
 
@@ -31,6 +31,9 @@ class CartScreen extends ConsumerWidget {
           (cartItem.item.price *
               cartItem.quantity),
     );
+
+    final orderService =
+        OrderService();
 
     return Scaffold(
 
@@ -269,11 +272,14 @@ class CartScreen extends ConsumerWidget {
 
                           onPressed: () async {
 
-                            final success =
-                                cart.isNotEmpty;
-
                             final orderItems =
                                 [...cart];
+
+                            final success =
+                                await orderService
+                                    .placeOrder(
+                              cart,
+                            );
 
                             if (success) {
 
