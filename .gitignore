@@ -19,3 +19,6 @@ ios/Pods/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Allow Flutter env
+!nutristart_frontend/.env
