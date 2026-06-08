@@ -17,9 +17,9 @@ static final Dio dio = Dio(
     // baseUrl: 'http://127.0.0.1:8000',
 
     //deployed to railway
-    // baseUrl: 'https://nutristart-production.up.railway.app/',
+    baseUrl: 'https://nutristart-production.up.railway.app/',
 
-    baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://127.0.0.1:8000',
+    // baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://127.0.0.1:8000',
     
     connectTimeout: const Duration(seconds: 5),
     receiveTimeout: const Duration(seconds: 5),
