@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/storage/token_storage.dart';
+import '../../admin/admin_dashboard_screen.dart';
 import '../../menu/menu_screen.dart';
 import '../../menu/services/menu_service.dart';
 import 'login_screen.dart';
@@ -30,10 +31,30 @@ class _AuthGateState
 
     final token =
         await TokenStorage.getToken();
+    final role =
+        await TokenStorage.getUserRole();
 
     print("TOKEN: $token");
 
     if (token != null) {
+
+      if (role == "ADMIN") {
+
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+
+          context,
+
+          MaterialPageRoute(
+
+            builder: (_) =>
+                const AdminDashboardScreen(),
+          ),
+        );
+
+        return;
+      }
 
       final menuItems =
           await menuService.getMenu();

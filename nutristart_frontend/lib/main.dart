@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'features/auth/services/auth_service.dart';
 import 'features/auth/screens/auth_gate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  runApp(
-  const ProviderScope(
-    child: MyApp(),
-  ),
-);
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  runApp(const ProviderScope(child: MyApp(),),);
 }
 
 class MyApp extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
+import '../../admin/admin_dashboard_screen.dart';
 import '../../menu/menu_screen.dart';
 import '../../menu/services/menu_service.dart';
 import '../../../core/storage/token_storage.dart';
@@ -41,13 +42,33 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result["access_token"] != null) {
 
       final token = result["access_token"];
+      final role =
+          (result["role"] as String?) ?? "user";
 
       await TokenStorage.saveToken(token);
+      await TokenStorage.saveUserRole(role);
 
       print("TOKEN SAVED");
       
       final savedToken =await TokenStorage.getToken();
       print(savedToken);
+
+      if (role == "ADMIN") {
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+
+          context,
+
+          MaterialPageRoute(
+
+            builder: (_) =>
+                const AdminDashboardScreen(),
+          ),
+        );
+
+        return;
+      }
 
       final menuItems =
           await menuService.getMenu();

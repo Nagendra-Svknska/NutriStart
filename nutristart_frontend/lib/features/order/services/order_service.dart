@@ -71,9 +71,7 @@ Future<List<OrderModel>>
   try {
 
     final response =
-        await DioClient.dio.get(
-      "/orders",
-    );
+        await DioClient.dio.get("/orders",);
 
     final data =
         response.data as List;
@@ -91,6 +89,59 @@ Future<List<OrderModel>>
     return [];
   }
 }
+
+  Future<List<OrderModel>>
+      getAdminOrders() async {
+
+    try {
+
+      final response =
+          await DioClient.dio.get(
+        "/orders/admin/all",
+      );
+
+      final data =
+          response.data as List;
+
+      return data.map((json) {
+
+        return OrderModel.fromJson(
+          json,
+        );
+
+      }).toList();
+
+    } on DioException catch (e) {
+
+      print(e.response?.data);
+
+      return [];
+    }
+  }
+
+  Future<bool> updateOrderStatus(
+    int orderId,
+    String status,
+  ) async {
+
+    try {
+
+      await DioClient.dio.put(
+        "/orders/admin/$orderId/status",
+        data: {
+          "status": status,
+        },
+      );
+
+      return true;
+
+    } on DioException catch (e) {
+
+      print(e.response?.data);
+
+      return false;
+    }
+  }
 
 
 }
