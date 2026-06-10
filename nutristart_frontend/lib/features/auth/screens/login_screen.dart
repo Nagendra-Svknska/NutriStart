@@ -109,61 +109,110 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text("Login"),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+    body: Center(
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
 
-          children: [
+              children: [
 
-            TextField(
-              controller: emailController,
+                const Icon(
+                  Icons.restaurant,
+                  size: 80,
+                  color: Colors.green,
+                ),
 
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
+                const SizedBox(height: 16),
+
+                const Text(
+                  "NutriStart",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+
+                  child: ElevatedButton(
+                    onPressed:
+                        isLoading ? null : login,
+
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text("Login"),
+                  ),
+                ),
+
+                const SizedBox(height: 50),
+
+                const Divider(),
+
+                const SizedBox(height: 20),
+
+                const Text(
+                  "Contact Us",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                const Text(
+                  "📍 Visakhapatnam, Andhra Pradesh",
+                ),
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  "📞 +91 XXXXX XXXXX",
+                ),
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  "✉️ support@nutristart.com",
+                ),
+              ],
             ),
-
-            const SizedBox(height: 20),
-
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-
-              child: ElevatedButton(
-
-                onPressed: isLoading
-                    ? null
-                    : login,
-
-                child: isLoading
-
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
-
-                    : const Text(
-                        "Login",
-                      ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
+    ),
     );
   }
 }
